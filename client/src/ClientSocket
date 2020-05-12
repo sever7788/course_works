@@ -1,0 +1,21 @@
+class ClientSocket{
+public:
+	int sock;
+	struct sockaddr_in addr;
+	ClientSocket(){
+		sock = socket(AF_INET, SOCK_DGRAM, 0);
+		if(sock < 0)
+		{
+			perror("socket");
+		    exit(0);
+		}
+		addr.sin_family = AF_INET;
+		addr.sin_port = htons(3425);
+		addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		if(bind(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+		{
+			perror("bind");
+			exit(1);
+	    }
+	}
+};

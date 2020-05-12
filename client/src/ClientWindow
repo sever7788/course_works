@@ -1,0 +1,46 @@
+//------------------------------------------------------------------------------------------------
+extern int errno;
+//------------------------------------------------------------------------------------------------
+class ClientWindow{
+public:
+	//------------------------------------------------------------------------------------------------
+	#define X 0
+	#define Y 0
+	#define WIDTH 1300
+	#define HEIGHT 700
+	#define DISPLAY_WIDTH 1300
+	#define DISPLAY_HEIGHT 700
+		Display     *display;
+		Window      window;
+		XEvent      event;
+		int         screen;
+		XImage      *image;
+		GC          graph_ctx;
+		XGCValues   *gc_values;
+	ClientWindow(){}
+	void createWindow(){
+		// Соединяемся с X сервером
+		if ((display = XOpenDisplay(getenv("DISPLAY"))) == NULL)
+		{
+		    printf("Can't connect X server: %s\n", strerror(errno));
+		    exit(1);
+		}
+		screen = XDefaultScreen(display);
+		image = XGetImage(display, DefaultRootWindow(display), 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, AllPlanes, ZPixmap);
+
+		// Создаем окно
+		window = XCreateSimpleWindow(display, RootWindow(display, screen), X, Y, WIDTH, HEIGHT, 10, XBlackPixel(display, screen), XWhitePixel(display, screen));
+		// Создаем графический контекст
+		graph_ctx=XCreateGC(display, window, 0, gc_values);
+		// На какие события будем реагировать
+		XSelectInput(display, window, ExposureMask | KeyPressMask);
+		//Показываем окно на экране
+		XMapWindow(display, window);
+		return;
+	}
+
+	void displayScreen(){
+		XPutImage(display, window, graph_ctx, image, 0, 0, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+		return;
+	}
+};
