@@ -1,0 +1,31 @@
+//------------------------------------------------------------------------------------------------
+extern int errno;
+//------------------------------------------------------------------------------------------------
+class ServerDisplay{
+public:
+	//------------------------------------------------------------------------------------------------
+	#define X 0
+	#define Y 0
+	#define WIDTH 1300
+	#define HEIGHT 700
+	#define DISPLAY_WIDTH 1300
+	#define DISPLAY_HEIGHT 700
+	
+	
+	Display     *display;
+    XImage      *image;
+
+	ServerDisplay(){
+	 // Соединяемся с X сервером
+    if ((display = XOpenDisplay(getenv("DISPLAY"))) == NULL)
+    {
+        printf("Can't connect X server: %s\n", strerror(errno));
+        exit(1);
+    }
+	}
+	
+	void getDisplay(){
+		image = XGetImage(display, DefaultRootWindow(display), 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, AllPlanes, ZPixmap);
+		return;
+	}
+};

@@ -1,0 +1,21 @@
+class ServerSocket{
+public:
+ 	int sock;
+    struct sockaddr_in addr;
+	ServerSocket(){
+	sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if(sock < 0)
+    {
+        perror("socket");
+        exit(1);
+    }
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(3425);
+    inet_aton("192.168.0.2",&addr.sin_addr);
+
+    
+    connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+	}
+	
+};
