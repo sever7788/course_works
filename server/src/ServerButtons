@@ -1,0 +1,51 @@
+class ServerButtons{
+public:
+	Display *display;
+	int KEYCODE;
+	XEvent event;
+	char buf[10];
+	Window root;
+	ClientSocket *s;
+	bool *end;
+	ServerButtons(bool *END){
+		end = END;
+		s = new ClientSocket(3427);
+		display = XOpenDisplay(0);
+	}
+	
+	void receiveEvent(){
+	int button;
+	Bool down;
+		while(!*end){
+			recvfrom(s->sock, buf, 10, 0, NULL, NULL);
+			if(strlen(buf) == 2){
+				button = buf[1] - '0';
+				if(buf[0] == 'p')
+					down = 1;
+				else down = 0;
+				sendClick(button, down);
+			}else{
+				if(buf[0]=='C')
+					*end = true;
+				KEYCODE = (unsigned int)buf[0];
+				if(buf[1]=='p')
+					XTestFakeKeyEvent(display, KEYCODE, True, 0);
+  				else 
+  					XTestFakeKeyEvent(display, KEYCODE, False, 0);
+			}
+			XFlush(display);
+		}
+		XCloseDisplay(display);
+		return;
+	}
+	
+void key_event(Display *display, Window *win, Window *win_root, int keycode, int is_press) { 
+
+}
+	
+void sendClick(int button, Bool down){
+	XTestFakeButtonEvent(display, button, down, CurrentTime);
+	XFlush(display);
+}	
+
+};

@@ -2,7 +2,7 @@ class ServerSocket{
 public:
  	int sock;
     struct sockaddr_in addr;
-	ServerSocket(){
+	ServerSocket(char* ip, int port){
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
     if(sock < 0)
     {
@@ -11,8 +11,8 @@ public:
     }
 
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(3425);
-    inet_aton("192.168.0.2",&addr.sin_addr);
+    addr.sin_port = htons(port);
+    inet_aton(ip/*"192.168.0.2"*/,&addr.sin_addr);
 
     
     connect(sock, (struct sockaddr *)&addr, sizeof(addr));
