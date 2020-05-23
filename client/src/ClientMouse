@@ -1,0 +1,39 @@
+class ClientMouse{
+public:
+	Display *display;
+    int screen_number;
+    unsigned int modbut;
+    Window w1;
+    Window w;
+    ServerSocket *s;
+    int xy[2];
+    char buf1[20];
+    char buf2[10];
+    //Window win;
+    int new_x, new_y,temp1,temp2;
+    bool *end;
+ClientMouse(char* ip, Window win,bool *END){
+	end = END;
+	w = win;
+	if ( ( display = XOpenDisplay ( NULL ) ) == NULL ) {
+    	puts ("Can not connect to the X server!\n");
+        exit ( 1 );
+        }
+    screen_number = DefaultScreen ( display );
+   	s = new ServerSocket(ip,3426);
+}
+
+void getCursorPos(){
+		while(!*end){
+			XQueryPointer(display, w, &w1, &w1, &new_x, &new_y, &temp1, &temp2, &modbut);
+			sprintf(buf1,"%d", temp1);
+			sprintf(buf2,"%d", temp2);
+			strcat(buf1,"e");
+			strcat(buf1,buf2);
+			send(s->sock, buf1, 20, 0);
+        usleep(10000);
+    	}
+    return;
+}
+
+};

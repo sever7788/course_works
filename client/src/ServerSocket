@@ -1,0 +1,24 @@
+class ServerSocket{
+public:
+	int port;
+ 	int sock;
+    struct sockaddr_in addr;
+    
+	ServerSocket(char* ip, int port){
+	this->port = port;
+	sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if(sock < 0)
+    {
+        perror("socket");
+        exit(1);
+    }
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    inet_aton(ip,&addr.sin_addr);
+
+    
+    connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+	}
+	
+};

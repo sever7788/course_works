@@ -6,10 +6,10 @@ public:
 	//------------------------------------------------------------------------------------------------
 	#define X 0
 	#define Y 0
-	#define WIDTH 1300
-	#define HEIGHT 700
-	#define DISPLAY_WIDTH 1300
-	#define DISPLAY_HEIGHT 700
+	#define WIDTH 1366
+	#define HEIGHT 768
+	#define DISPLAY_WIDTH 1366
+	#define DISPLAY_HEIGHT 768
 		Display     *display;
 		Window      window;
 		XEvent      event;

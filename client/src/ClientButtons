@@ -1,0 +1,52 @@
+class ClientButtons{
+public:
+	Display *display;
+    int screen_number;
+    Window w;
+    ServerSocket *s;
+    char buf[10];
+    XEvent event;
+    int new_x, new_y,temp1,temp2;
+    bool *end;
+ClientButtons(char* ip, Window win,bool *END){
+	end = END;
+	w = win;
+	if ( ( display = XOpenDisplay ( NULL ) ) == NULL ) {
+    	puts ("Can not connect to the X server!\n");
+        exit ( 1 );
+        }
+    screen_number = DefaultScreen ( display );
+   	s = new ServerSocket(ip,3427);
+   	
+   	XSelectInput(display, w, ButtonPressMask|ButtonReleaseMask|KeyPressMask|KeyReleaseMask);
+}
+
+void sendEvent(){
+		while(!*end){
+			if((char)event.xkey.keycode == 'C')
+				*end = true;
+			XNextEvent(display, &event);
+			if(event.type > 3)
+			switch(event.xbutton.button){
+			case Button1: getTypeEvent(); strcat(buf,"1");break;
+			case Button2: getTypeEvent(); strcat(buf,"2");break;
+			case Button3: getTypeEvent(); strcat(buf,"3");break;
+			}else
+			getTypeEvent();
+			send(s->sock, buf, 10, 0);
+        usleep(10000);
+    	}
+    return;
+}
+
+void getTypeEvent(){
+	switch(event.type){
+		case 2: sprintf(buf,"%c",event.xkey.keycode); strcat(buf,"pk");break;
+		case 3: sprintf(buf,"%c",event.xkey.keycode); strcat(buf,"rk");break;
+		case 4: sprintf(buf,"%s", "p");return;
+		case 5: sprintf(buf,"%s", "r");return;
+	}
+	
+}
+
+};
